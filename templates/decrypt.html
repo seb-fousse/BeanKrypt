@@ -1,4 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-    <p>Decrypt</p>
+    <h2>Decrypt</h2>
+    <form method='POST' enctype='multipart/form-data'>
+        {{ form.csrf_token }}
+        <h3>Image Upload</h3>
+        {{ form.image() }}
+        {{ form.submit() }}
+    </form>
 {% endblock %}

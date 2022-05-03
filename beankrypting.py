@@ -1,11 +1,13 @@
 from random import choice, randint
-from PIL import Image, ImageDraw, ImageFont
 import textwrap
+from os import path
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 # All bean images will have the same dimensions
-w, h = (512, 512)
-padding = 12
+WIDTH, HEIGHT = (512, 512)
+PADDING = 12
+FONT = ImageFont.load_default()
 
 # Translate a value from one range to another
 def translate(value, leftMin, leftMax, rightMin, rightMax):
@@ -51,15 +53,14 @@ def generate_name():
     return text
 
 # Encode a piece of text into a given image, and return the encoded image
-def encode(bean_img, text):
-    
-    # Load font
-    font = ImageFont.load_default()
+def encode(bean_img_path, text):
+
+    bean_img = Image.open(bean_img_path, mode='r')
 
     # Font is monospaced, so will always have same dimensions
-    char_w, char_h = font.getsize('1')
-    line_length = int((w - padding) / char_w)
-    text_height = int((h - padding) / char_h)
+    char_w, char_h = FONT.getsize('1')
+    line_length = int((WIDTH - PADDING) / char_w)
+    text_height = int((HEIGHT - PADDING) / char_h)
     max_chars = line_length * text_height
     
     # Check if text to be encoded might be too long
@@ -72,9 +73,9 @@ def encode(bean_img, text):
     assert text.count('/n') < text_height, "Text is too long"
     
     # Create b&w image with text
-    img = Image.new(size=(w,h), mode='RGB')
+    img = Image.new(size=(WIDTH,HEIGHT), mode='RGB')
     draw = ImageDraw.Draw(img)
-    draw.text(xy=(padding / 2, padding / 2), text=text, font=font, fill="#FFFFFF")
+    draw.text(xy=(PADDING / 2, PADDING / 2), text=text, font=FONT, fill="#FFFFFF")
     
     # Get bean and text images as pixel array
     new_img = bean_img.copy()
@@ -91,14 +92,17 @@ def encode(bean_img, text):
             bean_array[idx][0] = round_to_even(bean_pix[0])
     
     # Reshape array and turn into image
-    bean_array = np.reshape(np.array(bean_array, dtype=np.uint8), (w, h, 3))
+    bean_array = np.reshape(np.array(bean_array, dtype=np.uint8), (WIDTH, HEIGHT, 3))
     encoded_img = Image.fromarray(bean_array, mode='RGB')
     
     return encoded_img
 
-# Decode an image that was previously encoded with the encode function, return decoded image
-def decode(encoded_img):
+# Decode an image that was previously encoded with the encode function, return decoded image filepath
+def decode(encoded_img_path, storage_path):
     
+    encoded_img = Image.open(encoded_img_path, mode='r')
+    filename = path.basename(encoded_img_path)
+
     # Get encoded img as a pixel array
     encoded_array = np.array(list(encoded_img.getdata()))
     
@@ -113,7 +117,12 @@ def decode(encoded_img):
             blank_array[idx] = [translate(x, 0, 255, 200, 255) for x in encoded_pix]
             
     # Convert image array into an iamge
-    nonblank_array = np.reshape(np.array(blank_array, dtype=np.uint8), (w, h, 3))
+    nonblank_array = np.reshape(np.array(blank_array, dtype=np.uint8), (WIDTH, HEIGHT, 3))
     decoded_img = Image.fromarray(nonblank_array, mode='RGB')
+
+    decoded_filename = 'decrypted_'+filename
+    decoded_filepath = storage_path+'/'+decoded_filename
+
+    decoded_img.save(decoded_filepath)
     
-    return decoded_img
+    return (decoded_img, decoded_filepath, decoded_filename)
