@@ -1,6 +1,5 @@
 from random import choice, randint
 import textwrap
-from os import path
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
@@ -125,4 +124,4 @@ def decode(encoded_img_path, storage_path):
 
     decoded_img.save(decoded_filepath)
     
-    return (decoded_img, decoded_filepath, decoded_filename)
+    return (decoded_filepath, decoded_filename)

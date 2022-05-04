@@ -36,19 +36,22 @@ def encrypt():
 def decrypt():
     decrypt_form = DecryptForm()
 
+    # On valid image submit
     if decrypt_form.validate_on_submit():
+
+        # Save uploaded image temporarily
         filename = secure_filename(decrypt_form.image.data.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         decrypt_form.image.data.save(filepath)
-        print(filename)
 
-        img, decoded_filepath, decoded_filename = decode(filepath, app.config['UPLOAD_FOLDER'])
-        os.remove(filepath)
+        # Decode the image and keep track of the filepath and name
+        decoded_filepath, decoded_filename = decode(filepath, app.config['UPLOAD_FOLDER'])
+        os.remove(filepath) # Remove uploaded image as is no longer needed
 
+        # Render the decoded image in an html template
         return render_template('image.html', image_path=decoded_filepath, image_name=decoded_filename)
 
     return render_template('decrypt.html', form=decrypt_form)
-
 
 
 if __name__ == '__main__':
