@@ -7,12 +7,13 @@ h1 {
     color: #555555;
     margin: 0 auto;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    margin-top: 15px;
 }
 
 header {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 1opx;
 }
 
 .btn-wrapper {
@@ -23,7 +24,7 @@ header {
 }
 
 .button{
-    background-color: #555555;; /* Green */
+    background-color: #555555;; 
     border: none;
     color: white;
     padding: 12px 24px;
@@ -45,12 +46,51 @@ header {
 .header-button:hover {
     background-color: #555555;
     color: white;
-  }
+}
 
 /*
  * Centering the body content
  */
  .container {
-    width: 1200px;
+    width: 600px;
     margin: auto;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+/*
+ *
+ */
+
+ image {
+     margin: auto;
+ }
+
+ button{
+    background-color: #555555;; 
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border: 2px solid #555555;
+}
+
+button:hover {
+    background-color: white;
+    color: #555555;
+    border: 2px solid #555555;
 }

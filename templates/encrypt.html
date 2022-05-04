@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Encrypt Form</h2>
     <form method='POST' enctype="multipart/form-data">
         {{ form.csrf_token }}
-        <h3>
-            {{ form.text.label }}
-        </h3>
-        <p>{{ form.text() }}</p>
-        <tr> {% for btn in form.bean_type %}
-            <td>{{ btn }}</td>
-            <td>{{ btn.label }}</td>
-        {% endfor %}</tr>
-        <p>{{ form.submit() }}</p>
+        <h3>{{ form.text.label(class_="center") }}</h3>
+        <p>{{ form.text(class_="center") }}</p>
+        <div class="btn-wrapper">
+            <tr> {% for btn in form.bean_type %}
+                <td>{{ btn }}</td>
+                <td>{{ btn.label }}</td>
+            {% endfor %}</tr>
+        </div>
+        <p>{{ form.submit(class_="center") }}</p>
     </form>
 {% endblock %}

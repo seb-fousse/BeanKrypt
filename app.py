@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from forms import EncryptForm, DecryptForm
 from werkzeug.utils import secure_filename
-from beankrypting import encode, decode
+from beankrypting import encode, decode, generate_name
 from random import randint
 import os
 
@@ -26,9 +26,21 @@ def encrypt():
         # Find path to random bean img
         bean_type = encrypt_form.bean_type.data.lower()
         rand_int = str(randint(0,4))
-        path_to_bean_img = f'/static/images/{bean_type}/{rand_int}.png'
+        path_to_bean_img = f'static/images/{bean_type}/{rand_int}.png'
+        
         # Encode text into image
-        encoded_img = encode(path_to_bean_img, encrypt_form.text.data)
+        try:
+            encoded_img = encode(path_to_bean_img, encrypt_form.text.data)
+        except Exception as e:
+            flash('Something went wrong when trying to encode your message')
+            print(e)
+            
+        # Save encoded image and display to user
+        encoded_filename = f'{generate_name()}.png'
+        encoded_filepath = os.path.join(app.config['UPLOAD_FOLDER'], encoded_filename)
+        encoded_img.save(encoded_filepath)
+
+        return render_template('image.html', image_name=encoded_filename, image_path=encoded_filepath)
 
     return render_template('encrypt.html', form=encrypt_form)
 
@@ -39,17 +51,26 @@ def decrypt():
     # On valid image submit
     if decrypt_form.validate_on_submit():
 
+        print(request.files)
+        image = request.files['image']
+
         # Save uploaded image temporarily
         filename = secure_filename(decrypt_form.image.data.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        decrypt_form.image.data.save(filepath)
 
         # Decode the image and keep track of the filepath and name
-        decoded_filepath, decoded_filename = decode(filepath, app.config['UPLOAD_FOLDER'])
-        os.remove(filepath) # Remove uploaded image as is no longer needed
+        try:
+            decoded_img = decode(image)
+        except Exception as e:
+            flash('Something went wrong while trying to decrypt your image')
+            print(e)
 
-        # Render the decoded image in an html template
-        return render_template('image.html', image_path=decoded_filepath, image_name=decoded_filename)
+        # Save decoded image and display to user
+        decoded_filename = f'decoded_{filename}'
+        decoded_filepath = os.path.join(app.config['UPLOAD_FOLDER'], decoded_filename)
+        decoded_img.save(decoded_filepath)
+        
+        return render_template('image.html', image_name=decoded_filename, image_path=decoded_filepath)
 
     return render_template('decrypt.html', form=decrypt_form)
 

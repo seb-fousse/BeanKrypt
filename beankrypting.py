@@ -1,5 +1,6 @@
 from random import choice, randint
 import textwrap
+from os import path
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
@@ -42,19 +43,20 @@ def generate_name():
     
     text = ''
     
-    if random.randint(1,6) != 6:
-        text += random.choice(word1) + '_'
-    if random.randint(1,6) != 6:
-        text += random.choice(word2) + '_'
+    if randint(1,6) != 6:
+        text += choice(word1) + '_'
+    if randint(1,6) != 6:
+        text += choice(word2) + '_'
         
-    text += 'beans_' + str(random.randint(1,700)) + '_of_' + str(random.randint(1000,5000))
+    text += 'beans_' + str(randint(1,1000)) + '_of_' + str(randint(1000,5000))
     
     return text
 
 # Encode a piece of text into a given image, and return the encoded image
 def encode(bean_img_path, text):
 
-    bean_img = Image.open(bean_img_path, mode='r')
+    bean_img = Image.open(bean_img_path, 'r')
+    print(bean_img.size)
 
     # Font is monospaced, so will always have same dimensions
     char_w, char_h = FONT.getsize('1')
@@ -80,6 +82,7 @@ def encode(bean_img_path, text):
     new_img = bean_img.copy()
     bean_array = np.array(list(new_img.getdata()))
     img_array = np.array(list(img.getdata()))
+    n = len(bean_array[0])
     
     # For each pixel in the bean and text image
     for idx, (bean_pix, img_pix) in enumerate(zip(bean_array, img_array)):
@@ -91,37 +94,54 @@ def encode(bean_img_path, text):
             bean_array[idx][0] = round_to_even(bean_pix[0])
     
     # Reshape array and turn into image
-    bean_array = np.reshape(np.array(bean_array, dtype=np.uint8), (WIDTH, HEIGHT, 3))
-    encoded_img = Image.fromarray(bean_array, mode='RGB')
+    bean_array = np.reshape(np.array(bean_array, dtype=np.uint8), (WIDTH, HEIGHT, n))
+    if n == 3:
+        encoded_img = Image.fromarray(bean_array, mode='RGB')
+    elif n == 4:
+        encoded_img = Image.fromarray(bean_array, mode='RGBA')
+    else:
+        raise Exception(f'Error: Pixel in array has {n} values. Cannot save as RGB or RGBA')
     
     return encoded_img
 
 # Decode an image that was previously encoded with the encode function, return decoded image filepath
-def decode(encoded_img_path, storage_path):
+def decode(encoded_img):
     
-    encoded_img = Image.open(encoded_img_path, mode='r')
-    filename = path.basename(encoded_img_path)
+    #encoded_img = Image.open(encoded_img_path, mode='r')
+    encoded_img = Image.open(encoded_img, mode='r')
 
     # Get encoded img as a pixel array
     encoded_array = np.array(list(encoded_img.getdata()))
+    n = len(encoded_array[0])
     
+    print(encoded_array.shape)
+
+    # Logic to handle images that have/don't have an alpha channel
+    pix = []
+    if n == 3:
+        pix = [255,255,255]
+    elif n == 4:
+        pix = [255,255,255,255]
+    else:
+        raise Exception(f'Error: Pixel in array has {n} values')
+
     # Create blank image array
-    blank_array = np.full(encoded_array.shape, [255,255,255])
-    
+    blank_array = np.full(encoded_array.shape, pix)
+
     # Update blank image array
     for idx, encoded_pix in enumerate(encoded_array):
         if encoded_pix[0] % 2 != 0:
-            blank_array[idx] = [0, 0, 0]
+            blank_array[idx] = [0,0,0] if n == 3 else [0,0,0,255]
         else:
             blank_array[idx] = [translate(x, 0, 255, 200, 255) for x in encoded_pix]
             
     # Convert image array into an iamge
-    nonblank_array = np.reshape(np.array(blank_array, dtype=np.uint8), (WIDTH, HEIGHT, 3))
-    decoded_img = Image.fromarray(nonblank_array, mode='RGB')
-
-    decoded_filename = 'decrypted_'+filename
-    decoded_filepath = storage_path+'/'+decoded_filename
-
-    decoded_img.save(decoded_filepath)
+    nonblank_array = np.reshape(np.array(blank_array, dtype=np.uint8), (WIDTH, HEIGHT, n))
+    if n == 3:
+        decoded_img = Image.fromarray(nonblank_array, mode='RGB')
+    elif n == 4:
+        decoded_img = Image.fromarray(nonblank_array, mode='RGBA')
+    else:
+        raise Exception(f'Error: Pixel in array has {n} values. Cannot save as RGB or RGBA')
     
-    return (decoded_filepath, decoded_filename)
+    return decoded_img
