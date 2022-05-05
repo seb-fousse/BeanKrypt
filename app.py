@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request
 from forms import EncryptForm, DecryptForm
 from werkzeug.utils import secure_filename
 from beankrypting import encode, decode, generate_name
@@ -73,7 +73,3 @@ def decrypt():
         return render_template('image.html', image_name=decoded_filename, image_path=decoded_filepath)
 
     return render_template('decrypt.html', form=decrypt_form)
-
-
-if __name__ == '__main__':
-    app.run()
