@@ -32,7 +32,7 @@ def encrypt():
         try:
             encoded_img = encode(path_to_bean_img, encrypt_form.text.data)
         except Exception as e:
-            flash('Something went wrong when trying to encode your message')
+            #flash('Something went wrong when trying to encode your message')
             print(e)
             
         # Save encoded image and display to user
