@@ -5,7 +5,7 @@ from beankrypting import encode, decode, generate_name
 from random import randint
 import os
 
-upload_path = '../static/images/uploaded'
+upload_path = 'static/images/uploaded'
 secret_key = 'mysecret123'
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ def encrypt():
         # Find path to random bean img
         bean_type = encrypt_form.bean_type.data.lower()
         rand_int = str(randint(0,4))
-        path_to_bean_img = f'../static/images/{bean_type}/{rand_int}.png'
+        path_to_bean_img = f'static/images/{bean_type}/{rand_int}.png'
         
         # Encode text into image
         #try:
