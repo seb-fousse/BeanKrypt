@@ -29,11 +29,11 @@ def encrypt():
         path_to_bean_img = f'../static/images/{bean_type}/{rand_int}.png'
         
         # Encode text into image
-        try:
-            encoded_img = encode(path_to_bean_img, encrypt_form.text.data)
-        except Exception as e:
+        #try:
+        encoded_img = encode(path_to_bean_img, encrypt_form.text.data)
+        #except Exception as e:
             #flash('Something went wrong when trying to encode your message')
-            print(e)
+            #print(e)
             
         # Save encoded image and display to user
         encoded_filename = f'{generate_name()}.png'
