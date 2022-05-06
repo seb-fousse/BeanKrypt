@@ -2,14 +2,14 @@
 {% block content %}
     <form method='POST' enctype="multipart/form-data">
         {{ form.csrf_token }}
-        <h3>{{ form.text.label(class_="center") }}</h3>
-        <p>{{ form.text(class_="center") }}</p>
+        <h3>{{ form.text.label(class_="center beany") }}</h3>
+        <p>{{ form.text(class_="center beany2") }}</p>
         <div class="btn-wrapper">
             <tr> {% for btn in form.bean_type %}
                 <td>{{ btn }}</td>
-                <td>{{ btn.label }}</td>
+                <td>{{ btn.label(class_="beany") }}</td>
             {% endfor %}</tr>
         </div>
-        <p>{{ form.submit(class_="center") }}</p>
+        <p>{{ form.submit(class_="center beany2") }}</p>
     </form>
 {% endblock %}

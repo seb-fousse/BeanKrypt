@@ -2,8 +2,8 @@
 {% block content %}
     <form method='POST' enctype='multipart/form-data'>
         {{ form.csrf_token }}
-        <h3>{{ form.image.label(class_="center") }}</h3>
-        {{ form.image(class_="center") }}
-        <p>{{ form.submit(class_="center") }}</p>
+        <h3>{{ form.image.label(class_="center beany") }}</h3>
+        {{ form.image(class_="center beany2") }}
+        <p>{{ form.submit(class_="center beany2") }}</p>
     </form>
 {% endblock %}

@@ -1,4 +1,31 @@
 /*
+ *  Font stuff
+ */
+ @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+
+ @font-face {
+    font-family: 'beanregular';
+    src: url('fonts/Bean-Regular.ttf') format('truetype'),
+        url('fonts/bean-regular-webfont.woff') format('woff'),
+        url('fonts/bean-regular-webfont.woff2') format('woff2');
+}
+
+p {
+    font-family: 'Caveat', cursive;
+    font-size: 2em;
+}
+
+.beany {
+    font-family: 'Caveat', cursive;
+    font-size: 2em;
+}
+
+.beany2 {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2em;
+}
+
+/*
  *  Headers
  */
 
@@ -9,6 +36,7 @@ h1 {
     text-align: center;
     margin-bottom: 30px;
     margin-top: 15px;
+    font-family: 'beanregular', Arial, sans-serif;
 }
 
 header {
@@ -35,12 +63,17 @@ header {
     margin: 4px 2px;
     transition-duration: 0.4s;
     cursor: pointer;
+    font-family: 'beanregular', Arial, sans-serif;
+    font-weight: bold;
 }
 
 .header-button{
     background-color: white; 
     color: #555555; 
     border: 2px solid #555555;
+    font-family: 'beanregular', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2em;
 }
 
 .header-button:hover {
@@ -67,7 +100,7 @@ header {
 }
 
 /*
- *
+ *  Misc
  */
 
  image {
@@ -87,10 +120,25 @@ header {
     transition-duration: 0.4s;
     cursor: pointer;
     border: 2px solid #555555;
+    font-family: 'beanregular', Arial, sans-serif;
+    font-weight: bold;
 }
 
 button:hover {
     background-color: white;
     color: #555555;
     border: 2px solid #555555;
+}
+
+.rotate {
+    animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
 }
